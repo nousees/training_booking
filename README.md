@@ -1,59 +1,159 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Система бронирования персональных тренировок
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Веб-приложение для бронирования персональных тренировок с тренером, построенное на Laravel с использованием Livewire.
 
-## About Laravel
+## Функциональность
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Роли пользователей
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+1. **Владелец (Owner)**
+   - Управление спортзалами (CRUD)
+   - Управление тренерами (CRUD)
+   - Управление тренировками (CRUD)
+   - Управление бронированиями (CRUD)
+   - Просмотр статистики
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. **Менеджер (Manager)**
+   - Управление тренерами (CRUD)
+   - Управление тренировками (CRUD)
+   - Управление бронированиями (CRUD)
 
-## Learning Laravel
+3. **Клиент (User)**
+   - Просмотр доступных тренировок
+   - Создание и управление своими бронированиями
+   - Просмотр информации о тренерах и спортзалах
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Основные сущности
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- **Спортзалы** - места проведения тренировок
+- **Тренеры** - специалисты, проводящие тренировки
+- **Тренировки** - услуги, которые можно забронировать
+- **Бронирования** - записи клиентов на тренировки
 
-## Laravel Sponsors
+## Установка и запуск
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Требования
 
-### Premium Partners
+- PHP 8.1+
+- Composer
+- MySQL/PostgreSQL
+- Node.js и npm
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Установка
 
-## Contributing
+1. Клонируйте репозиторий:
+```bash
+git clone <repository-url>
+cd training_booking
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2. Установите зависимости PHP:
+```bash
+composer install
+```
 
-## Code of Conduct
+3. Установите зависимости Node.js:
+```bash
+npm install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4. Скопируйте файл конфигурации:
+```bash
+cp .env.example .env
+```
 
-## Security Vulnerabilities
+5. Сгенерируйте ключ приложения:
+```bash
+php artisan key:generate
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6. Настройте базу данных в файле `.env`:
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=training_booking
+DB_USERNAME=root
+DB_PASSWORD=
+```
 
-## License
+7. Выполните миграции:
+```bash
+php artisan migrate
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+8. Заполните базу данных тестовыми данными:
+```bash
+php artisan db:seed
+```
+
+9. Соберите фронтенд:
+```bash
+npm run build
+```
+
+10. Запустите сервер разработки:
+```bash
+php artisan serve
+```
+
+## Тестовые данные
+
+После выполнения `php artisan db:seed` будут созданы следующие тестовые аккаунты:
+
+### Владелец
+- Email: `owner@example.com`
+- Пароль: `password`
+
+### Менеджер
+- Email: `manager@example.com`
+- Пароль: `password`
+
+### Клиенты
+- Email: `client1@example.com`
+- Пароль: `password`
+
+- Email: `client2@example.com`
+- Пароль: `password`
+
+## Использование
+
+1. Откройте приложение в браузере (обычно `http://localhost:8000`)
+2. Войдите в систему с одним из тестовых аккаунтов
+3. В зависимости от роли, у вас будет доступ к соответствующим функциям:
+   - **Владелец**: Полный доступ ко всем функциям через панель владельца
+   - **Менеджер**: Управление тренерами, тренировками и бронированиями
+   - **Клиент**: Просмотр тренировок и управление своими бронированиями
+
+## Структура проекта
+
+```
+app/
+├── Http/Controllers/          # Контроллеры для CRUD операций
+├── Livewire/                  # Livewire компоненты
+│   ├── Owner/                # Компоненты для владельца
+│   ├── Manager/              # Компоненты для менеджера
+│   └── User/                 # Компоненты для клиентов
+└── Models/                   # Модели Eloquent
+
+resources/views/
+├── livewire/                 # Представления Livewire компонентов
+├── layouts/                  # Основные макеты
+└── *.blade.php              # Основные страницы
+
+database/
+├── migrations/               # Миграции базы данных
+└── seeders/                 # Сидеры для тестовых данных
+```
+
+## Технологии
+
+- **Laravel 11** - PHP фреймворк
+- **Livewire** - Для интерактивных компонентов
+- **Tailwind CSS** - Для стилизации
+- **MySQL/PostgreSQL** - База данных
+- **Laravel Breeze** - Аутентификация
+
+## Лицензия
+
+Этот проект создан в образовательных целях.

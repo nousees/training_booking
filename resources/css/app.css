@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Кастомные стили для переопределения text-white */
+.text-white {
+    --tw-text-opacity: 1;
+    color: rgb(3 251 13) !important;
+}

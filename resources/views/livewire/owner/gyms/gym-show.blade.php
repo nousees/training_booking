@@ -13,11 +13,9 @@
                         <a href="{{ route('owner.gyms.index') }}" class="text-indigo-600 hover:text-indigo-900">
                             ← Back to Gyms
                         </a>
-                        <x-primary-button>
-                            <a href="{{ route('owner.gyms.edit', $gym) }}" class="text-white no-underline">
-                                Edit Gym
-                            </a>
-                        </x-primary-button>
+                        <a href="{{ route('owner.gyms.edit', $gym) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                            Редактировать спортзал
+                        </a>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">

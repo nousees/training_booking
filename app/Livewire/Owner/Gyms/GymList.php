@@ -15,8 +15,8 @@ class GymList extends Component
     {
         return view('livewire.owner.gyms.gym-list', [
             'gyms' => Gym::where('owner_id', auth()->id())->paginate(10)
-        ])->layout('layouts.app', [
-            'title' => 'My Gyms'
+        ])->layout('components.layouts.app', [
+            'title' => 'Мои спортзалы'
         ]);
     }
 

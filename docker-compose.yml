@@ -12,6 +12,12 @@ services:
       - training-network
     depends_on:
       - postgres
+    command: >
+      sh -c "
+        chmod -R 775 storage bootstrap/cache &&
+        chown -R www-data:www-data storage bootstrap/cache &&
+        php-fpm
+      "
 
   nginx:
     image: nginx:alpine

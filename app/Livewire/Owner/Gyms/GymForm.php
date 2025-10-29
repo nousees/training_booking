@@ -32,6 +32,11 @@ class GymForm extends Component
     public function mount($gym = null)
     {
         if ($gym) {
+            // Если $gym это строка (ID), находим модель
+            if (is_string($gym) || is_numeric($gym)) {
+                $gym = Gym::where('owner_id', Auth::id())->findOrFail($gym);
+            }
+            
             $this->gymId = $gym->id;
             $this->name = $gym->name;
             $this->description = $gym->description;
