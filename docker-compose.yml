@@ -1,0 +1,60 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: training_app
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - training-network
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:alpine
+    container_name: training_nginx
+    restart: unless-stopped
+    ports:
+      - "8001:80"
+    volumes:
+      - .:/var/www
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d
+    networks:
+      - training-network
+    depends_on:
+      - app
+
+  postgres:
+    image: postgres:15
+    container_name: training_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: training_db
+      POSTGRES_USER: training_user
+      POSTGRES_PASSWORD: training_password
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - training-network
+
+  node:
+    image: node:18
+    container_name: training_node
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    networks:
+      - training-network
+    command: tail -f /dev/null
+
+volumes:
+  postgres_data:
+
+networks:
+  training-network:
+    driver: bridge
