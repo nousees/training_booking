@@ -105,3 +105,4 @@ class GymController extends Controller
     }
 }
 
+

@@ -127,3 +127,4 @@ class TrainingController extends Controller
     }
 }
 
+
