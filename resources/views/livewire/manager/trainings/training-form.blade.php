@@ -19,7 +19,7 @@
 
                             <div>
                                 <label for="gym_id" class="block text-sm font-medium text-gray-700">Спортзал *</label>
-                                <select wire:model="gym_id" id="gym_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                <select wire:model.live="gym_id" id="gym_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                                     <option value="">Выберите спортзал</option>
                                     @foreach($gyms as $gym)
                                         <option value="{{ $gym->id }}">{{ $gym->name }}</option>
@@ -30,7 +30,7 @@
 
                             <div>
                                 <label for="trainer_id" class="block text-sm font-medium text-gray-700">Тренер *</label>
-                                <select wire:model="trainer_id" id="trainer_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                                <select wire:key="trainer-select-{{ $gym_id }}" wire:model="trainer_id" id="trainer_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" @disabled(!$gym_id)>
                                     <option value="">Выберите тренера</option>
                                     @foreach($trainers as $trainer)
                                         <option value="{{ $trainer->id }}">{{ $trainer->name }}</option>
