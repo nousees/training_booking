@@ -29,19 +29,26 @@ new #[Layout('layouts.guest')] class extends Component
 
         session(['auth.password_confirmed_at' => time()]);
 
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        $user = Auth::user();
+        $defaultRoute = $user?->role === 'owner'
+            ? route('admin.dashboard', absolute: false)
+            : ($user?->role === 'trainer'
+                ? route('trainer-panel.dashboard', absolute: false)
+                : route('trainers', absolute: false));
+
+        $this->redirectIntended(default: $defaultRoute, navigate: true);
     }
 }; ?>
 
 <div>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
+        Это защищённый раздел. Пожалуйста, подтвердите пароль перед продолжением.
     </div>
 
     <form wire:submit="confirmPassword">
-        <!-- Password -->
+        <!-- Пароль -->
         <div>
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" value="Пароль" />
 
             <x-text-input wire:model="password"
                           id="password"
@@ -55,7 +62,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         <div class="flex justify-end mt-4">
             <x-primary-button>
-                {{ __('Confirm') }}
+                Подтвердить
             </x-primary-button>
         </div>
     </form>

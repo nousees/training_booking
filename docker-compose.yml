@@ -12,6 +12,16 @@ services:
       - training-network
     depends_on:
       - postgres
+      - redis
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=training_db
+      - DB_USERNAME=training_user
+      - DB_PASSWORD=training_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     command: >
       sh -c "
         chmod -R 775 storage bootstrap/cache &&
@@ -48,6 +58,77 @@ services:
     networks:
       - training-network
 
+  redis:
+    image: redis:7-alpine
+    container_name: training_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - training-network
+    command: redis-server --appendonly yes
+
+  queue:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: training_queue
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=training_db
+      - DB_USERNAME=training_user
+      - DB_PASSWORD=training_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - training-network
+    command: >
+      sh -c "
+        php artisan queue:work redis --sleep=3 --tries=3 --max-time=3600
+      "
+
+  scheduler:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: training_scheduler
+    restart: unless-stopped
+    working_dir: /var/www
+    volumes:
+      - .:/var/www
+    depends_on:
+      - postgres
+      - redis
+    environment:
+      - DB_CONNECTION=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_DATABASE=training_db
+      - DB_USERNAME=training_user
+      - DB_PASSWORD=training_password
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+    networks:
+      - training-network
+    command: >
+      sh -c "
+        while true; do
+          php artisan schedule:run --verbose --no-interaction;
+          sleep 60;
+        done
+      "
+
   node:
     image: node:18
     container_name: training_node
@@ -60,6 +141,7 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
 
 networks:
   training-network:

@@ -3,6 +3,7 @@
 namespace App\Livewire\Manager\Bookings;
 
 use App\Models\Booking;
+use App\Notifications\BookingCancelledNotification;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -21,11 +22,18 @@ class BookingList extends Component
         ]);
     }
 
-    public function deleteBooking($bookingId)
+    public function cancelBooking(int $bookingId, ?string $reason = null): void
     {
         $booking = Booking::findOrFail($bookingId);
-        $booking->delete();
-        
-        session()->flash('message', 'Бронирование успешно удалено.');
+
+        $booking->status = 'cancelled_by_trainer';
+        $booking->cancellation_reason = $reason;
+        $booking->save();
+
+        if ($booking->user) {
+            $booking->user->notify(new BookingCancelledNotification($booking, 'trainer'));
+        }
+
+        session()->flash('message', 'Бронирование отменено тренером.');
     }
 }

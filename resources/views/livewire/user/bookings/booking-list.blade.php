@@ -1,4 +1,4 @@
-<div>
+<div x-data>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
             Мои бронирования
@@ -21,6 +21,21 @@
                             {{ session('message') }}
                         </div>
                     @endif
+
+                    <div class="mb-4 flex space-x-2">
+                        <button
+                            wire:click="$set('tab', 'upcoming')"
+                            class="px-4 py-2 text-sm font-semibold rounded-full border {{ $tab === 'upcoming' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300' }}"
+                        >
+                            Предстоящие
+                        </button>
+                        <button
+                            wire:click="$set('tab', 'past')"
+                            class="px-4 py-2 text-sm font-semibold rounded-full border {{ $tab === 'past' ? 'bg-blue-600 text-white border-blue-600' : 'bg-white text-gray-700 border-gray-300' }}"
+                        >
+                            Прошедшие
+                        </button>
+                    </div>
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200">
@@ -56,26 +71,36 @@
                                                 'pending' => 'bg-yellow-100 text-yellow-800',
                                                 'confirmed' => 'bg-green-100 text-green-800',
                                                 'cancelled' => 'bg-red-100 text-red-800',
-                                                'completed' => 'bg-blue-100 text-blue-800'
+                                                'cancelled_by_client' => 'bg-red-100 text-red-800',
+                                                'cancelled_by_trainer' => 'bg-red-100 text-red-800',
+                                                'completed' => 'bg-blue-100 text-blue-800',
                                             ];
                                             $statusLabels = [
                                                 'pending' => 'Ожидает',
                                                 'confirmed' => 'Подтверждено',
                                                 'cancelled' => 'Отменено',
-                                                'completed' => 'Завершено'
+                                                'cancelled_by_client' => 'Отменено клиентом',
+                                                'cancelled_by_trainer' => 'Отменено тренером',
+                                                'completed' => 'Завершено',
                                             ];
                                         @endphp
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$booking->status] }}">
-                                            {{ $statusLabels[$booking->status] }}
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $statusColors[$booking->status] ?? 'bg-gray-100 text-gray-800' }}">
+                                            {{ $statusLabels[$booking->status] ?? $booking->status }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <a href="{{ route('user.bookings.show', $booking) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-3 rounded text-xs mr-2">Просмотр</a>
-                                        @if($booking->status === 'pending')
-                                        <a href="{{ route('user.bookings.edit', $booking) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded text-xs mr-2">Редактировать</a>
-                                        @endif
-                                        @if(in_array($booking->status, ['pending', 'confirmed']))
-                                        <button wire:click="deleteBooking({{ $booking->id }})" class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs" onclick="return confirm('Вы уверены?')">Отменить</button>
+                                        @if($booking->start_time->isFuture() && in_array($booking->status, ['pending', 'confirmed']))
+                                            <a href="{{ route('user.bookings.edit', $booking) }}" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-3 rounded text-xs mr-2">Редактировать</a>
+                                            <button
+                                                x-on:click.prevent="
+                                                    let reason = prompt('Укажите причину отмены (необязательно)');
+                                                    $wire.cancelBooking({{ $booking->id }}, reason);
+                                                "
+                                                class="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded text-xs"
+                                            >
+                                                Отменить
+                                            </button>
                                         @endif
                                     </td>
                                 </tr>

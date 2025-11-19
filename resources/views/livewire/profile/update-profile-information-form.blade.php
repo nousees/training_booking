@@ -51,7 +51,13 @@ new class extends Component
         $user = Auth::user();
 
         if ($user->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route('dashboard', absolute: false));
+            $defaultRoute = $user?->role === 'owner'
+                ? route('admin.dashboard', absolute: false)
+                : ($user?->role === 'trainer'
+                    ? route('trainer-panel.schedule', absolute: false)
+                    : route('trainers', absolute: false));
+
+            $this->redirectIntended(default: $defaultRoute);
 
             return;
         }

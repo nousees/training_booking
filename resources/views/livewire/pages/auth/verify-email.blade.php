@@ -14,7 +14,14 @@ new #[Layout('layouts.guest')] class extends Component
     public function sendVerification(): void
     {
         if (Auth::user()->hasVerifiedEmail()) {
-            $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+            $user = Auth::user();
+            $defaultRoute = $user?->role === 'owner'
+                ? route('admin.dashboard', absolute: false)
+                : ($user?->role === 'trainer'
+                    ? route('trainer-panel.dashboard', absolute: false)
+                    : route('trainers', absolute: false));
+
+            $this->redirectIntended(default: $defaultRoute, navigate: true);
 
             return;
         }
@@ -37,22 +44,22 @@ new #[Layout('layouts.guest')] class extends Component
 
 <div>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
+        Спасибо за регистрацию! Прежде чем продолжить, пожалуйста, подтвердите ваш email по ссылке, которую мы отправили. Если письмо не пришло, мы можем отправить его повторно.
     </div>
 
     @if (session('status') == 'verification-link-sent')
         <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
+            Новая ссылка для подтверждения отправлена на ваш email.
         </div>
     @endif
 
     <div class="mt-4 flex items-center justify-between">
         <x-primary-button wire:click="sendVerification">
-            {{ __('Resend Verification Email') }}
+            Отправить письмо ещё раз
         </x-primary-button>
 
         <button wire:click="logout" type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-            {{ __('Log Out') }}
+            Выйти
         </button>
     </div>
 </div>

@@ -22,13 +22,12 @@ class RedirectByRole
             
             switch ($user->role) {
                 case 'owner':
-                    return redirect()->route('owner.gyms.index');
-                case 'manager':
-                    return redirect()->route('manager.trainers.index');
-                case 'user':
-                    return redirect()->route('user.trainings.index');
+                    return redirect()->route('admin.dashboard');
+                case 'trainer':
+                    return redirect()->route('trainer-panel.schedule');
+                case 'client':
                 default:
-                    return redirect()->route('dashboard');
+                    return redirect()->route('trainers');
             }
         }
 

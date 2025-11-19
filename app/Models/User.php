@@ -2,50 +2,48 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $fillable = [
         'name',
         'email',
+        'phone',
+        'avatar',
+        'role',
+        'timezone',
+        'notify_email',
+        'notify_in_app',
         'password',
-        'role',   
-        'phone',  
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'blocked_at' => 'datetime',
         ];
+    }
+
+    public function isClient(): bool
+    {
+        return $this->role === 'client';
+    }
+
+    public function isTrainer(): bool
+    {
+        return $this->role === 'trainer';
     }
 
     public function isOwner(): bool
@@ -53,24 +51,38 @@ class User extends Authenticatable
         return $this->role === 'owner';
     }
 
-    public function isManager(): bool
-    {
-        return $this->role === 'manager';
-    }
-
-    public function isUser(): bool
-    {
-        return $this->role === 'user';
-    }
-
     public function hasRole(string $role): bool
     {
         return $this->role === $role;
     }
 
-    public function ownedGyms()
+    public function trainerProfile()
     {
-        return $this->hasMany(Gym::class, 'owner_id');
+        return $this->hasOne(TrainerProfile::class);
     }
 
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function trainingSessions()
+    {
+        return $this->hasMany(TrainingSession::class, 'trainer_id');
+    }
+
+    public function isBlocked(): bool
+    {
+        return !is_null($this->blocked_at);
+    }
 }
