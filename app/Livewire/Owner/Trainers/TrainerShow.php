@@ -13,7 +13,7 @@ class TrainerShow extends Component
 
     public function mount(Trainer $trainer)
     {
-        // Проверяем, что тренер принадлежит спортзалу владельца
+
         $gym = Gym::where('owner_id', Auth::id())->find($trainer->gym_id);
         if (!$gym) {
             abort(403, 'Доступ запрещен');

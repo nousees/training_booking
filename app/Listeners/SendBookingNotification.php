@@ -17,19 +17,18 @@ class SendBookingNotification
 
         Notification::create([
             'user_id' => $trainer->id,
-            'title' => 'New Booking',
-            'message' => "{$client->name} booked your session on {$booking->session->date->format('M j, Y')}",
+            'title' => 'Новое бронирование',
+            'message' => "Клиент {$client->name} забронировал у вас тренировку на {$booking->session->date->format('d.m.Y')}.",
             'type' => 'booking_created',
         ]);
 
         Notification::create([
             'user_id' => $client->id,
-            'title' => 'Booking Confirmed',
-            'message' => "Your booking with {$trainer->name} is pending confirmation",
+            'title' => 'Бронирование создано',
+            'message' => "Ваше бронирование у тренера {$trainer->name} ожидает подтверждения.",
             'type' => 'booking_created',
         ]);
 
-        $trainer->notify(new BookingNotification($booking, 'trainer'));
         $client->notify(new BookingNotification($booking, 'client'));
     }
 }

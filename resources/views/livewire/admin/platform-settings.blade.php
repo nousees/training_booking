@@ -34,6 +34,28 @@
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Минимальное время до начала (часы)
+                    </label>
+                    <input type="number" wire:model="minBookingHoursBeforeStart" min="0"
+                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                    @error('minBookingHoursBeforeStart') 
+                        <span class="text-red-500 text-sm">{{ $message }}</span> 
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Максимальное количество дней вперёд для бронирования
+                    </label>
+                    <input type="number" wire:model="maxBookingDaysAhead" min="1"
+                           class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                    @error('maxBookingDaysAhead') 
+                        <span class="text-red-500 text-sm">{{ $message }}</span> 
+                    @enderror
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Валюта (3 буквы)
                     </label>
                     <input type="text" wire:model="currency" maxlength="3"
@@ -48,6 +70,14 @@
                         <input type="checkbox" wire:model="maintenanceMode"
                                class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500">
                         <span class="ml-2 text-sm text-gray-700">Режим обслуживания</span>
+                    </label>
+                </div>
+
+                <div>
+                    <label class="flex items-center">
+                        <input type="checkbox" wire:model="autoConfirmBookings"
+                               class="rounded border-gray-300 text-green-600 shadow-sm focus:border-green-500 focus:ring-green-500">
+                        <span class="ml-2 text-sm text-gray-700">Авто-подтверждение новых бронирований</span>
                     </label>
                 </div>
             </div>

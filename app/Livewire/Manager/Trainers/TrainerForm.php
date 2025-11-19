@@ -31,7 +31,7 @@ class TrainerForm extends Component
     public function mount($trainer = null)
     {
         if ($trainer) {
-            // Если $trainer это строка (ID), находим модель
+
             if (is_string($trainer) || is_numeric($trainer)) {
                 $trainer = \App\Models\Trainer::findOrFail($trainer);
             }

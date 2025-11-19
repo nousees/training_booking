@@ -29,10 +29,6 @@
                                 <div class="text-sm text-gray-500">{{ __('Дата регистрации') }}</div>
                                 <div class="text-lg text-gray-900">{{ auth()->user()->created_at->format('d.m.Y H:i') }}</div>
                             </div>
-                            <div>
-                                <div class="text-sm text-gray-500">{{ __('Последний вход') }}</div>
-                                <div class="text-lg text-gray-900">{{ auth()->user()->last_login_at ?? '-' }}</div>
-                            </div>
                         </div>
                     </div>
 

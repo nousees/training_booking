@@ -33,7 +33,7 @@ class TrainingForm extends Component
     public function mount($training = null)
     {
         if ($training) {
-            // Если $training это строка (ID), находим модель
+
             if (is_string($training) || is_numeric($training)) {
                 $training = \App\Models\Training::findOrFail($training);
             }

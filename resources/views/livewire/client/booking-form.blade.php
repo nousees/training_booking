@@ -19,6 +19,12 @@
 
                 
                 
+                @if($errorMessage)
+                    <div class="mb-3 text-sm text-red-600">
+                        {{ $errorMessage }}
+                    </div>
+                @endif
+
                 <div class="flex justify-end space-x-3">
                     <button wire:click="$set('sessionId', null)" 
                             class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">

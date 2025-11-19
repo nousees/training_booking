@@ -14,7 +14,7 @@ class BookingShow extends Component
 
     public function mount(Booking $booking)
     {
-        // Проверяем, что бронирование принадлежит тренировке владельца
+
         $training = Training::find($booking->training_id);
         $gym = Gym::where('owner_id', Auth::id())->find($training->gym_id);
         if (!$gym) {

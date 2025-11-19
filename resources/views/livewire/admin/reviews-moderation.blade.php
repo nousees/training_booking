@@ -7,6 +7,18 @@
         </div>
     @endif
 
+    <div class="mb-4 flex items-center space-x-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Фильтр по тренеру</label>
+            <select wire:model="trainerId" class="rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                <option value="">Все тренеры</option>
+                @foreach($trainers as $trainerProfile)
+                    <option value="{{ $trainerProfile->user_id }}">{{ $trainerProfile->user->name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

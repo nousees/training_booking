@@ -11,7 +11,7 @@ class ScheduleService
     public function createSession(User $trainer, array $data): TrainingSession
     {
         if (!$trainer->isTrainer()) {
-            throw new \Exception('User is not a trainer');
+            throw new \Exception('Пользователь не является тренером.');
         }
 
         $this->validateNoOverlap($trainer, $data['date'], $data['start_time'], $data['end_time']);
@@ -30,7 +30,7 @@ class ScheduleService
     public function updateSession(TrainingSession $session, array $data): void
     {
         if ($session->status === 'booked') {
-            throw new \Exception('Cannot update a booked session');
+            throw new \Exception('Нельзя изменить уже забронированный слот.');
         }
 
         $this->validateNoOverlap(
@@ -51,11 +51,11 @@ class ScheduleService
         $end = Carbon::parse($date . ' ' . $endTime);
 
         if ($start >= $end) {
-            throw new \Exception('Start time must be before end time');
+            throw new \Exception('Время начала должно быть раньше времени окончания.');
         }
 
-        // Check overlap against all sessions for that day (both available and booked)
-        // Overlap exists iff (existing.start < newEnd) AND (existing.end > newStart)
+
+
         $query = TrainingSession::where('trainer_id', $trainer->id)
             ->where('date', $date)
             ->where(function ($q) use ($start, $end) {
@@ -68,7 +68,7 @@ class ScheduleService
         }
 
         if ($query->exists()) {
-            throw new \Exception('Session overlaps with existing session');
+            throw new \Exception('Этот слот пересекается с уже существующим.');
         }
     }
 
@@ -85,7 +85,7 @@ class ScheduleService
             return [];
         }
 
-        // Fetch all sessions that affect the day (both available and booked)
+
         $sessions = TrainingSession::where('trainer_id', $trainer->id)
             ->where('date', $date)
             ->orderBy('start_time')
@@ -95,7 +95,7 @@ class ScheduleService
         foreach ($sessions as $s) {
             $sStart = Carbon::parse($date . ' ' . Carbon::parse($s->start_time)->format('H:i:s'));
             $sEnd = Carbon::parse($date . ' ' . Carbon::parse($s->end_time)->format('H:i:s'));
-            // Clip to working window
+
             if ($sEnd->lte($dayStart) || $sStart->gte($dayEnd)) {
                 continue;
             }
@@ -105,7 +105,7 @@ class ScheduleService
             ];
         }
 
-        // Merge overlapping blocked intervals
+
         usort($blocked, function ($a, $b) { return $a['start'] <=> $b['start']; });
         $merged = [];
         foreach ($blocked as $b) {
@@ -123,7 +123,7 @@ class ScheduleService
             }
         }
 
-        // Build free intervals as gaps between merged blocks within [dayStart, dayEnd]
+
         $free = [];
         $cursor = $dayStart->clone();
         foreach ($merged as $m) {

@@ -12,7 +12,7 @@ class BookingShow extends Component
 
     public function mount(Booking $booking)
     {
-        // Проверяем, что бронирование принадлежит текущему пользователю
+
         if ($booking->user_id !== Auth::id()) {
             abort(403, 'Доступ запрещен');
         }

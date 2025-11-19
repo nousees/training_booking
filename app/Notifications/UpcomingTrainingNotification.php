@@ -32,7 +32,7 @@ class UpcomingTrainingNotification extends Notification implements ShouldQueue
             ->line('Напоминаем о вашей предстоящей тренировке.')
             ->line('Тренировка: ' . ($training?->name ?? '—'))
             ->line('Начало: ' . $this->booking->start_time?->format('d.m.Y H:i'))
-            ->action('Мои тренировки', route('user.bookings.index'));
+            ->action('Мои тренировки', route('profile.bookings'));
     }
 }
 

@@ -34,7 +34,7 @@ class TrainerController extends Controller
             'gym_id' => 'required|exists:gyms,id',
         ]);
 
-        // Проверяем, что спортзал принадлежит текущему владельцу
+
         $gym = Gym::where('owner_id', Auth::id())->findOrFail($request->gym_id);
 
         Trainer::create([
@@ -86,7 +86,7 @@ class TrainerController extends Controller
             'gym_id' => 'required|exists:gyms,id',
         ]);
 
-        // Проверяем, что новый спортзал принадлежит текущему владельцу
+
         $newGym = Gym::where('owner_id', Auth::id())->findOrFail($request->gym_id);
 
         $trainer->update([

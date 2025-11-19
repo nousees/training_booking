@@ -20,7 +20,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         Session::regenerate();
 
-        // Блокировка входа для заблокированных пользователей
+
         if (auth()->user()?->isBlocked()) {
             auth()->logout();
             Session::invalidate();

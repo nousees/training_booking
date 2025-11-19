@@ -34,7 +34,7 @@ class BookingForm extends Component
     public function mount($booking = null)
     {
         if ($booking) {
-            // Если $booking это строка (ID), находим модель
+
             if (is_string($booking) || is_numeric($booking)) {
                 $booking = \App\Models\Booking::where('user_id', Auth::id())->findOrFail($booking);
             }
@@ -90,7 +90,7 @@ class BookingForm extends Component
         } else {
             $booking = Booking::create($data);
 
-            // Отправляем уведомление клиенту
+
             Auth::user()->notify(new \App\Notifications\BookingConfirmedNotification($booking));
 
             session()->flash('message', 'Бронирование успешно создано.');

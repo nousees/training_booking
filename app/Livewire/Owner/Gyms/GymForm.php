@@ -32,7 +32,7 @@ class GymForm extends Component
     public function mount($gym = null)
     {
         if ($gym) {
-            // Если $gym это строка (ID), находим модель
+
             if (is_string($gym) || is_numeric($gym)) {
                 $gym = Gym::where('owner_id', Auth::id())->findOrFail($gym);
             }
@@ -68,10 +68,10 @@ class GymForm extends Component
         if ($this->gymId) {
             $gym = Gym::where('owner_id', Auth::id())->findOrFail($this->gymId);
             $gym->update($data);
-            session()->flash('message', 'Gym updated successfully.');
+            session()->flash('message', 'Зал успешно обновлён.');
         } else {
             Gym::create($data);
-            session()->flash('message', 'Gym created successfully.');
+            session()->flash('message', 'Зал успешно создан.');
         }
 
         return redirect()->route('owner.gyms.index');

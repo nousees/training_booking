@@ -39,7 +39,7 @@ class BookingCancelledNotification extends Notification implements ShouldQueue
         }
 
         return $message
-            ->action('Мои тренировки', route('user.bookings.index'));
+            ->action('Мои тренировки', route('profile.bookings'));
     }
 }
 

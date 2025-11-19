@@ -29,7 +29,7 @@ class BookingForm extends Component
     public function mount($booking = null)
     {
         if ($booking) {
-            // Если $booking это строка (ID), находим модель
+
             if (is_string($booking) || is_numeric($booking)) {
                 $booking = \App\Models\Booking::findOrFail($booking);
             }

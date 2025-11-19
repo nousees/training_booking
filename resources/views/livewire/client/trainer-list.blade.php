@@ -51,14 +51,14 @@
                 @php
                     $normalize = function ($path) {
                         if (!$path) return null;
-                        // Если это абсолютный URL, возвращаем как есть
+
                         if (\Illuminate\Support\Str::startsWith($path, ['http://','https://'])) {
                             return $path;
                         }
-                        // Нормализуем путь и убираем ведущие префиксы
+
                         $clean = str_replace('\\\\', '/', $path);
                         $clean = preg_replace('/^(public|storage)\//','', $clean);
-                        // Формируем URL вида /storage/<path>
+
                         return url('/storage/' . ltrim($clean, '/'));
                     };
 

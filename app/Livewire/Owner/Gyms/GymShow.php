@@ -12,7 +12,7 @@ class GymShow extends Component
 
     public function mount(Gym $gym)
     {
-        // Check if the gym belongs to the current owner
+
         if ($gym->owner_id !== Auth::id()) {
             abort(403, 'Unauthorized');
         }

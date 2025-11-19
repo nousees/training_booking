@@ -12,6 +12,7 @@ class BookingForm extends Component
 {
     public $sessionId;
     public $session;
+    public $errorMessage = '';
 
     public function mount($sessionId)
     {
@@ -29,14 +30,21 @@ class BookingForm extends Component
         if (!Auth::check() || !Auth::user()->isClient()) {
             return;
         }
-        $bookingService = app(BookingService::class);
-        $booking = $bookingService->createBooking(Auth::user(), $this->session);
+        $this->errorMessage = '';
 
-        $this->dispatch('booking-created', bookingId: $booking->id);
-        
-        session()->flash('message', 'Booking created successfully!');
-        
-        return redirect()->route('profile.bookings');
+        try {
+            $bookingService = app(BookingService::class);
+            $booking = $bookingService->createBooking(Auth::user(), $this->session);
+
+            $this->dispatch('booking-created', bookingId: $booking->id);
+
+            session()->flash('message', 'Бронирование успешно создано!');
+
+            return redirect()->route('profile.bookings');
+        } catch (\Throwable $e) {
+            $this->errorMessage = $e->getMessage();
+            return;
+        }
     }
 
     public function render()

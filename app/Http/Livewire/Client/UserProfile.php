@@ -66,14 +66,14 @@ class UserProfile extends Component
         }
 
         if (!$booking->canBeCanceled()) {
-            session()->flash('error', 'Cannot cancel this booking.');
+            session()->flash('error', 'Нельзя отменить это бронирование.');
             return;
         }
 
         $bookingService = app(\App\Services\BookingService::class);
         $bookingService->cancelBooking($booking);
-        
-        session()->flash('message', 'Booking canceled successfully!');
+
+        session()->flash('message', 'Бронирование успешно отменено!');
     }
 
     public function saveProfile()
@@ -118,7 +118,7 @@ class UserProfile extends Component
 
     public function render()
     {
-        // Автоматически переносим прошедшие подтвержденные тренировки в "completed"
+
         Booking::where('user_id', Auth::id())
             ->where('status', 'confirmed')
             ->whereHas('session', function ($q) {

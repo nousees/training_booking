@@ -36,7 +36,7 @@ class BookingController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        // Проверяем, что тренировка принадлежит спортзалу владельца
+
         $training = Training::findOrFail($request->training_id);
         $gym = Gym::where('owner_id', Auth::id())->find($training->gym_id);
         if (!$gym) {
@@ -94,7 +94,7 @@ class BookingController extends Controller
             'notes' => 'nullable|string|max:1000',
         ]);
 
-        // Проверяем, что новая тренировка принадлежит спортзалу владельца
+
         $newTraining = Training::findOrFail($request->training_id);
         $newGym = Gym::where('owner_id', Auth::id())->find($newTraining->gym_id);
         if (!$newGym) {

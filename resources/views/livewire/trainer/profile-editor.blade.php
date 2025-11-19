@@ -61,7 +61,6 @@
                 <div class="mt-4 grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Опыт (лет)</label>
-                        <input type="number" wire:model="experience_years" min="0" class="w-full rounded-md border-green-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
                         <input type="number" wire:model="experience_years" min="0" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
                         @error('experience_years') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
                     </div>

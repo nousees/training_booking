@@ -34,7 +34,7 @@ class ProfileEditor extends Component
         return [
             'name' => ['required','string','max:255'],
             'phone' => ['nullable','string','max:50'],
-            // 'timezone' removed from required validation (field hidden in UI)
+
             'avatar_upload' => ['nullable','image','max:2048'],
 
             'bio' => ['nullable','string'],
@@ -90,7 +90,7 @@ class ProfileEditor extends Component
 
         $profile = $user->trainerProfile()->firstOrCreate(['user_id' => $user->id]);
 
-        // handle gallery uploads
+
         $gallery = $this->images ?: [];
         foreach ($this->gallery_uploads as $upload) {
             $gallery[] = $upload->store('trainer_gallery', 'public');
@@ -112,7 +112,7 @@ class ProfileEditor extends Component
     public function removeImage($index)
     {
         if (isset($this->images[$index])) {
-            // Do not delete files physically to keep it simple; in production consider deleting
+
             array_splice($this->images, $index, 1);
         }
     }

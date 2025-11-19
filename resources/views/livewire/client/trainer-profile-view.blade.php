@@ -2,7 +2,7 @@
     @if($profile)
         <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
             <div class="md:flex">
-                <div class="md:w-1/3">
+                <div class="md:w-1/3 h-64 overflow-hidden">
                     @php
                         $images = is_array($profile->images ?? null) ? $profile->images : [];
                         $first = $images[0] ?? null;
@@ -24,7 +24,7 @@
                         }
                     @endphp
                     @if($url)
-                        <img src="{{ $url }}" alt="{{ $trainer->name }}" class="w-full h-64 md:h-full object-cover">
+                        <img src="{{ $url }}" alt="{{ $trainer->name }}" class="w-full h-full object-cover">
                     @endif
                 </div>
                 

@@ -14,7 +14,7 @@ class TrainerList extends Component
 
     public function render()
     {
-        // Менеджер может видеть всех тренеров из всех спортзалов
+
         $trainers = Trainer::with('gym')->paginate(10);
         
         return view('livewire.manager.trainers.trainer-list', [

@@ -74,13 +74,13 @@ class ScheduleManager extends Component
 
     public function save()
     {
-        // Нормализуем дату к Y-m-d для валидации/сервисов
+
         $this->date = $this->normalizeDateStr($this->date) ?? $this->date;
         $this->validate();
 
         $scheduleService = app(ScheduleService::class);
 
-        // Дополнительная проверка: сегодня нельзя ставить начало в прошлом
+
         if ($this->date === now()->format('Y-m-d')) {
             $nowStr = now()->format('H:i');
             if ($this->startTime < $nowStr) {
@@ -119,7 +119,7 @@ class ScheduleManager extends Component
 
     public function updatedDate()
     {
-        // Нормализуем пользовательский ввод (в т.ч. формат dd.mm.yyyy) к Y-m-d
+
         $this->date = $this->normalizeDateStr($this->date) ?? $this->date;
         $this->startTime = '';
         $this->endTime = '';
@@ -127,7 +127,7 @@ class ScheduleManager extends Component
         $this->autoComputeEndTime();
     }
 
-    // Явный обработчик события change на датапикере — чтобы гарантировать пересчёт сразу после выбора даты
+
     public function handleDateChange()
     {
         $this->updatedDate();
@@ -156,10 +156,10 @@ class ScheduleManager extends Component
         $dateNorm = $this->normalizeDateStr($this->date) ?? $this->date;
         $free = $service->getFreeIntervals(Auth::user(), $dateNorm, '07:00', '22:00');
 
-        // Шаг времени
+
         $step = in_array((int)$this->timeStep, [30,60], true) ? (int)$this->timeStep : 30;
 
-        // Для сегодняшнего дня — не предлагать прошедшее время
+
         $minStart = null;
         if ($this->date === now()->format('Y-m-d')) {
             $now = now()->copy()->second(0);
@@ -168,11 +168,11 @@ class ScheduleManager extends Component
             $minStart = $ceil;
         }
 
-        // Сформировать варианты начала (только те, где start + step <= конец интервала)
+
         foreach ($free as $interval) {
             $start = \Carbon\Carbon::parse($this->date.' '.$interval['start']);
             $end = \Carbon\Carbon::parse($this->date.' '.$interval['end']);
-            // учесть минимум на сегодня
+
             $t0 = $start->copy();
             if ($minStart && $t0->lt($minStart)) {
                 $t0 = $minStart->copy();
@@ -185,12 +185,12 @@ class ScheduleManager extends Component
             }
         }
 
-        // Конец вычисляется автоматически, отдельные варианты не нужны
+
     }
 
     protected function autoComputeEndTime(): void
     {
-        // Автоподстановка конца: конец = начало + шаг, но не позже конца свободного интервала
+
         if (!$this->date || !$this->startTime) {
             $this->endTime = '';
             return;
@@ -215,7 +215,7 @@ class ScheduleManager extends Component
             }
         }
 
-        // Если начало не попало ни в один свободный интервал (не должно случиться) — сбросить конец
+
         $this->endTime = '';
     }
 
@@ -239,12 +239,12 @@ class ScheduleManager extends Component
         }
 
         if ($session->status === 'booked') {
-            session()->flash('error', 'Cannot delete a booked session.');
+            session()->flash('error', 'Нельзя удалить уже забронированный слот.');
             return;
         }
 
         $session->delete();
-        session()->flash('message', 'Session deleted successfully!');
+        session()->flash('message', 'Слот успешно удалён!');
     }
 
     public function render()

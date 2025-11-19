@@ -20,7 +20,7 @@ class BookingNotification extends Notification implements ShouldQueue
 
     public function via($notifiable): array
     {
-        return ['mail', 'database'];
+        return ['mail'];
     }
 
     public function toMail($notifiable): MailMessage
@@ -34,13 +34,11 @@ class BookingNotification extends Notification implements ShouldQueue
         if ($this->recipientType === 'trainer') {
             $message->line('Клиент: ' . $this->booking->user->name)
                     ->line('Дата: ' . $session->date->format('d.m.Y'))
-                    ->line('Время: ' . $session->start_time->format('H:i') . ' - ' . $session->end_time->format('H:i'))
-                    ->action('Открыть бронирования', url('/trainer-panel/bookings'));
+                    ->line('Время: ' . $session->start_time->format('H:i') . ' - ' . $session->end_time->format('H:i'));
         } else {
             $message->line('Тренер: ' . $session->trainer->name)
                     ->line('Дата: ' . $session->date->format('d.m.Y'))
-                    ->line('Время: ' . $session->start_time->format('H:i') . ' - ' . $session->end_time->format('H:i'))
-                    ->action('Открыть бронирования', url('/profile'));
+                    ->line('Время: ' . $session->start_time->format('H:i') . ' - ' . $session->end_time->format('H:i'));
         }
 
         return $message;

@@ -129,7 +129,7 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-        // Пометить прошедшие тренировки как завершённые (для отзывов)
+
         $now = now();
         $pastBookings = Booking::whereIn('status', ['pending', 'confirmed'])
             ->whereHas('session', function ($q) use ($now) {
@@ -147,12 +147,12 @@ class DatabaseSeeder extends Seeder
             $b->update(['status' => 'completed']);
         }
 
-        // Добавить по одной завершённой тренировке для client1 и client2
+
         if (!empty($trainers) && count($clients) >= 2) {
             $trainer = $trainers[0];
             $yesterday = now()->subDay()->format('Y-m-d');
 
-            // Сессия 1 (10:00-11:00) для client1
+
             $session1 = TrainingSession::create([
                 'trainer_id' => $trainer->id,
                 'date' => $yesterday,
@@ -169,7 +169,7 @@ class DatabaseSeeder extends Seeder
                 'payment_status' => 'paid',
             ]);
 
-            // Сессия 2 (12:00-13:00) для client2
+
             $session2 = TrainingSession::create([
                 'trainer_id' => $trainer->id,
                 'date' => $yesterday,

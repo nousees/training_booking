@@ -25,7 +25,7 @@ class UsersTable extends Component
 
     public function updateRole($userId, $newRole)
     {
-        // Only allow switching between client and trainer
+
         if (!in_array($newRole, ['client', 'trainer'], true)) {
             session()->flash('error', 'Можно назначать только роли Клиент и Тренер.');
             return;
@@ -33,7 +33,7 @@ class UsersTable extends Component
 
         $user = User::findOrFail($userId);
 
-        // Protect owner accounts and prevent changing own role
+
         if ($user->role === 'owner' || auth()->id() === $user->id) {
             session()->flash('error', 'Этому пользователю нельзя изменить роль.');
             return;
@@ -48,7 +48,7 @@ class UsersTable extends Component
     {
         $user = User::findOrFail($userId);
 
-        // Нельзя блокировать владельца и самого себя
+
         if ($user->role === 'owner' || auth()->id() === $user->id) {
             session()->flash('error', 'Нельзя блокировать этого пользователя');
             return;

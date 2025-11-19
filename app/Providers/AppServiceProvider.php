@@ -2,9 +2,6 @@
 
 namespace App\Providers;
 
-use App\Events\BookingCreated;
-use App\Listeners\SendBookingNotification;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 
@@ -15,7 +12,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+
     }
 
     /**
@@ -23,12 +20,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        Event::listen(
-            BookingCreated::class,
-            SendBookingNotification::class
-        );
-
-        // Register Livewire component aliases for classes under App\Http\Livewire
         Livewire::component('app.http.livewire.trainer.schedule-manager', \App\Http\Livewire\Trainer\ScheduleManager::class);
         Livewire::component('app.http.livewire.trainer.booking-manager', \App\Http\Livewire\Trainer\BookingManager::class);
         Livewire::component('app.http.livewire.trainer.dashboard', \App\Http\Livewire\Trainer\Dashboard::class);

@@ -35,7 +35,7 @@ class BookingConfirmedNotification extends Notification implements ShouldQueue
             ->line('Тренер: ' . optional($training?->trainer)->name)
             ->line('Начало: ' . $this->booking->start_time?->format('d.m.Y H:i'))
             ->line('Окончание: ' . $this->booking->end_time?->format('d.m.Y H:i'))
-            ->action('Мои тренировки', route('user.bookings.index'))
+            ->action('Мои тренировки', route('profile.bookings'))
             ->line('Спасибо, что выбираете наши тренировки!');
     }
 }

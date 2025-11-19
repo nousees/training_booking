@@ -21,5 +21,5 @@ return Application::configure(basePath: dirname(__DIR__))
         $schedule->job(new MarkCompletedSessions)->daily();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+
     })->create();

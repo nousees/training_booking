@@ -31,7 +31,7 @@ class TrainerForm extends Component
     public function mount($trainer = null)
     {
         if ($trainer) {
-            // Если $trainer это строка (ID), находим модель
+
             if (is_string($trainer) || is_numeric($trainer)) {
                 $gymIds = \App\Models\Gym::where('owner_id', Auth::id())->pluck('id');
                 $trainer = \App\Models\Trainer::whereIn('gym_id', $gymIds)->findOrFail($trainer);
@@ -52,7 +52,7 @@ class TrainerForm extends Component
     {
         $this->validate();
 
-        // Проверяем, что спортзал принадлежит текущему владельцу
+
         $gym = Gym::where('owner_id', Auth::id())->findOrFail($this->gym_id);
 
         $data = [

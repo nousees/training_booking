@@ -24,7 +24,7 @@ class GymList extends Component
     {
         $gym = Gym::where('owner_id', Auth::id())->findOrFail($gymId);
         $gym->delete();
-        
-        session()->flash('message', 'Gym deleted successfully.');
+
+        session()->flash('message', 'Зал успешно удалён.');
     }
 }

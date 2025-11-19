@@ -13,7 +13,7 @@ class TrainingBookingSeeder extends Seeder
 {
     public function run(): void
     {
-        // Создаем владельца
+
         $owner = User::create([
             'name' => 'Владелец спортзала',
             'email' => 'owner@example.com',
@@ -22,7 +22,7 @@ class TrainingBookingSeeder extends Seeder
             'phone' => '+7 (999) 123-45-67',
         ]);
 
-        // Создаем менеджера
+
         $manager = User::create([
             'name' => 'Менеджер спортзала',
             'email' => 'manager@example.com',
@@ -31,7 +31,7 @@ class TrainingBookingSeeder extends Seeder
             'phone' => '+7 (999) 123-45-68',
         ]);
 
-        // Создаем клиентов
+
         $client1 = User::create([
             'name' => 'Иван Петров',
             'email' => 'client1@example.com',
@@ -48,7 +48,7 @@ class TrainingBookingSeeder extends Seeder
             'phone' => '+7 (999) 123-45-70',
         ]);
 
-        // Создаем спортзалы
+
         $gym1 = Gym::create([
             'name' => 'Фитнес-центр "Сила"',
             'description' => 'Современный фитнес-центр с новейшим оборудованием',
@@ -73,7 +73,7 @@ class TrainingBookingSeeder extends Seeder
             'owner_id' => $owner->id,
         ]);
 
-        // Создаем тренеров
+
         $trainer1 = Trainer::create([
             'name' => 'Алексей Смирнов',
             'bio' => 'Опытный тренер с 10-летним стажем. Специализируется на силовых тренировках и функциональном тренинге.',
@@ -104,7 +104,7 @@ class TrainingBookingSeeder extends Seeder
             'gym_id' => $gym2->id,
         ]);
 
-        // Создаем тренировки
+
         $training1 = Training::create([
             'name' => 'Персональная силовая тренировка',
             'description' => 'Индивидуальная тренировка с фокусом на развитие силы и мышечной массы',
@@ -138,7 +138,7 @@ class TrainingBookingSeeder extends Seeder
             'trainer_id' => $trainer3->id,
         ]);
 
-        // Создаем бронирования
+
         Booking::create([
             'user_id' => $client1->id,
             'training_id' => $training1->id,

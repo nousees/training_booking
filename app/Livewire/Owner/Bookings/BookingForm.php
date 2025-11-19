@@ -31,7 +31,7 @@ class BookingForm extends Component
     public function mount($booking = null)
     {
         if ($booking) {
-            // Если $booking это строка (ID), находим модель
+
             if (is_string($booking) || is_numeric($booking)) {
                 $gymIds = \App\Models\Gym::where('owner_id', Auth::id())->pluck('id');
                 $trainingIds = \App\Models\Training::whereIn('gym_id', $gymIds)->pluck('id');
@@ -52,7 +52,7 @@ class BookingForm extends Component
     {
         $this->validate();
 
-        // Проверяем, что тренировка принадлежит спортзалу владельца
+
         $training = Training::findOrFail($this->training_id);
         $gym = Gym::where('owner_id', Auth::id())->find($training->gym_id);
         if (!$gym) {
