@@ -112,9 +112,7 @@
                                 </div>
                             </div>
                             <div>
-                                @if($booking->status === 'pending')
-                                    <button wire:click="cancel({{ $booking->id }})" class="px-3 py-1.5 rounded-md border border-red-600 text-red-600 hover:bg-red-50">Отменить</button>
-                                @elseif($booking->status === 'confirmed' && $booking->canBeCanceled())
+                                @if($booking->canBeCanceled())
                                     <button wire:click="cancel({{ $booking->id }})" class="px-3 py-1.5 rounded-md border border-red-600 text-red-600 hover:bg-red-50">Отменить</button>
                                 @endif
                             </div>

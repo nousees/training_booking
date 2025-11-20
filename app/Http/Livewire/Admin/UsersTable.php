@@ -47,7 +47,6 @@ class UsersTable extends Component
 
         $user->update(['role' => $newRole]);
 
-        // Текст для уведомления
         $title = 'Роль в системе изменена';
         if ($newRole === 'trainer') {
             $title = 'Вам назначена роль тренера';
@@ -58,7 +57,6 @@ class UsersTable extends Component
             $message = 'Администратор назначил вам роль тренера. Теперь вам доступен кабинет тренера и управление расписанием.';
         }
 
-        // Внутреннее уведомление в профиль
         if ($user->notify_in_app ?? true) {
             Notification::create([
                 'user_id' => $user->id,
@@ -68,7 +66,6 @@ class UsersTable extends Component
             ]);
         }
 
-        // Email-уведомление
         if (($user->notify_email ?? true) && $user->email) {
             Mail::raw($message, function ($mail) use ($user, $title) {
                 $mail->to($user->email)
@@ -93,6 +90,20 @@ class UsersTable extends Component
         $user->save();
 
         session()->flash('message', $user->blocked_at ? 'Пользователь заблокирован' : 'Пользователь разблокирован');
+    }
+
+    public function deleteUser($userId)
+    {
+        $user = User::findOrFail($userId);
+
+        if ($user->role === 'owner' || auth()->id() === $user->id) {
+            session()->flash('error', 'Нельзя удалить этого пользователя');
+            return;
+        }
+
+        $user->delete();
+
+        session()->flash('message', 'Пользователь удалён');
     }
 
     public function render()

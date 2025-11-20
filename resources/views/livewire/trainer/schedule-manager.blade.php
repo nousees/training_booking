@@ -73,7 +73,6 @@
             <div class="flex-1 overflow-x-auto">
                 <div class="min-w-max">
                     @php
-                        // Кол-во шагов по 30 минут + последняя точка (22:00)
                         $totalSteps = ($hoursEnd - $hoursStart) * 60 / $stepMinutes + 1;
                     @endphp
                     <div class="grid" style="grid-template-columns: repeat({{ $totalSteps }}, minmax(70px, 1fr)); column-gap: 6px;">
@@ -116,8 +115,16 @@
 
                                         $cellSession = $slot['session'];
                                         $isBooked = $cellSession->status === 'booked';
-                                        $bg = $isBooked ? 'bg-blue-500' : 'bg-green-500';
-                                        $label = $isBooked ? 'Занято' : 'Свободно';
+
+                                        $isPast = $slot['end']->lte(\Carbon\Carbon::now());
+
+                                        if ($isPast) {
+                                            $bg = 'bg-gray-400';
+                                            $label = 'Завершено';
+                                        } else {
+                                            $bg = $isBooked ? 'bg-blue-500' : 'bg-green-500';
+                                            $label = $isBooked ? 'Занято' : 'Свободно';
+                                        }
                                     @endphp
                                     <button type="button"
                                             wire:click="showDetails({{ $cellSession->id }})"
@@ -247,9 +254,7 @@
                         </select>
                         @error('startTime') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                     </div>
-                    
-                    <!-- Поле конца убрано: конец рассчитывается автоматически на основе начала и шага -->
-                    
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Цена</label>
                         <input type="number" wire:model="price" step="0.01" min="0"

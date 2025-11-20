@@ -55,11 +55,18 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-right">
                             @php $blockDisabled = ($user->role === 'owner') || (auth()->id() === $user->id); @endphp
-                            <button @disabled($blockDisabled)
-                                    wire:click="toggleBlock({{ $user->id }})"
-                                    class="px-3 py-1.5 rounded-md border border-red-600 text-red-600 hover:bg-red-50 disabled:text-gray-400">
-                                {{ $user->isBlocked() ? 'Разблокировать' : 'Блокировать' }}
-                            </button>
+                            <div class="flex items-center justify-end gap-2">
+                                <button @disabled($blockDisabled)
+                                        wire:click="toggleBlock({{ $user->id }})"
+                                        class="px-3 py-1.5 rounded-md border border-red-600 text-red-600 hover:bg-red-50 disabled:text-gray-400">
+                                    {{ $user->isBlocked() ? 'Разблокировать' : 'Блокировать' }}
+                                </button>
+                                <button @disabled($blockDisabled)
+                                        wire:click="deleteUser({{ $user->id }})"
+                                        class="px-3 py-1.5 rounded-md border border-gray-400 text-gray-600 hover:bg-gray-100 disabled:text-gray-400">
+                                    Удалить
+                                </button>
+                            </div>
                         </td>
                     </tr>
                 @empty

@@ -90,7 +90,6 @@ class ProfileEditor extends Component
         $this->timezone = $user->timezone ?? 'Europe/Moscow';
         $this->avatar = $user->avatar;
 
-        /** @var TrainerProfile $profile */
         $profile = $user->trainerProfile()->firstOrCreate([ 'user_id' => $user->id ], [
             'bio' => '', 'specializations' => [], 'experience_years' => 0, 'price_per_hour' => 0, 'images' => [],
         ]);
@@ -124,7 +123,6 @@ class ProfileEditor extends Component
         ]);
 
         $profile = $user->trainerProfile()->firstOrCreate(['user_id' => $user->id]);
-
 
         $gallery = $this->images ?: [];
         foreach ($this->gallery_uploads as $upload) {

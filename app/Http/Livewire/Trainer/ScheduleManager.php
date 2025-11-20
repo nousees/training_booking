@@ -21,7 +21,7 @@ class ScheduleManager extends Component
     public $editingSession = null;
     public $freeStartOptions = [];
     public $freeEndOptions = [];
-    public $timeStep = 30; // minutes: 30 or 60
+    public $timeStep = 30;
     public $showDetailsModal = false;
     public $detailsSession = null;
     public $expandedDates = [];
@@ -63,12 +63,7 @@ class ScheduleManager extends Component
         }
 
         if ($profile->supports_online) {
-            $onlineLabel = 'Онлайн';
             $onlineValue = $profile->online_link ?: 'Онлайн тренировка';
-            if ($profile->online_link) {
-                $onlineLabel = 'Онлайн (' . $profile->online_link . ')';
-            }
-            // Добавляем как отдельную строку со значением ссылки/описания
             if (!in_array($onlineValue, $this->availableLocations, true)) {
                 $this->availableLocations[] = $onlineValue;
             }
@@ -86,7 +81,6 @@ class ScheduleManager extends Component
             $this->location = $this->editingSession->location;
             $this->price = $this->editingSession->price;
 
-            // если у слота локация отсутствует в текущих вариантах, добавим её, чтобы не потерять
             if ($this->location && !in_array($this->location, $this->availableLocations, true)) {
                 $this->availableLocations[] = $this->location;
             }
@@ -139,20 +133,17 @@ class ScheduleManager extends Component
 
     public function save()
     {
-
         $this->date = $this->normalizeDateStr($this->date) ?? $this->date;
         $this->validate();
 
         $scheduleService = app(ScheduleService::class);
 
-
-        if ($this->date === now()->format('Y-m-d')) {
-            $nowStr = now()->format('H:i');
-            if ($this->startTime < $nowStr) {
-                session()->flash('error', 'Нельзя создавать слот в прошлом времени.');
-                $this->computeFreeTimes();
-                return;
-            }
+        $now = \Carbon\Carbon::now();
+        $startDateTime = \Carbon\Carbon::parse($this->date . ' ' . $this->startTime);
+        if ($startDateTime->lte($now)) {
+            session()->flash('error', 'Нельзя создавать слот в прошлом времени.');
+            $this->computeFreeTimes();
+            return;
         }
 
         try {
@@ -310,20 +301,37 @@ class ScheduleManager extends Component
 
         $session->delete();
         session()->flash('message', 'Слот успешно удалён!');
+
+        $this->showDetailsModal = false;
+        $this->detailsSession = null;
     }
 
     public function render()
     {
-        $today = now()->toDateString();
-        $until = now()->copy()->addDays(6)->toDateString();
+        $user = Auth::user();
+        $tz = $user->timezone ?? 'Europe/Samara';
+
+        $now = now()->setTimezone($tz);
+        $today = $now->toDateString();
+        $until = $now->copy()->addDays(6)->toDateString();
 
         $query = TrainingSession::where('trainer_id', Auth::id())
             ->whereBetween('date', [$today, $until])
             ->orderBy('date')
             ->orderBy('start_time');
 
+        $sessions = $query->get();
+
+        $nowPoint = $now->copy();
+        foreach ($sessions as $s) {
+            $end = \Carbon\Carbon::parse(
+                $s->date->format('Y-m-d') . ' ' . \Carbon\Carbon::parse($s->end_time)->format('H:i:s')
+            );
+            $s->is_past_slot = $end->lte($nowPoint);
+        }
+
         return view('livewire.trainer.schedule-manager', [
-            'sessions' => $query->get(),
+            'sessions' => $sessions,
         ]);
     }
 }
