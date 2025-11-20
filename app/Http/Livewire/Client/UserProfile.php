@@ -24,6 +24,7 @@ class UserProfile extends Component
     public $current_password = '';
     public $password = '';
     public $password_confirmation = '';
+    public $showPasswordModal = false;
 
     protected function rules()
     {
@@ -114,6 +115,23 @@ class UserProfile extends Component
 
         $this->reset(['current_password','password','password_confirmation']);
         session()->flash('profile_saved', __('Пароль обновлён'));
+        $this->showPasswordModal = false;
+    }
+
+    public function openPasswordModal()
+    {
+        $this->reset(['current_password','password','password_confirmation']);
+        $this->showPasswordModal = true;
+    }
+
+    public function closePasswordModal()
+    {
+        $this->showPasswordModal = false;
+    }
+
+    public function openScheduleModal()
+    {
+        $this->dispatch('openClientSchedule');
     }
 
     public function render()

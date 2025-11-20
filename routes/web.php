@@ -10,6 +10,7 @@ Route::get('/trainer/{trainer}', \App\Http\Livewire\Client\TrainerProfileView::c
 Route::middleware(['auth', 'role:client'])->group(function () {
     Route::get('/profile', \App\Http\Livewire\Client\UserProfile::class)->name('profile');
     Route::get('/profile/bookings', \App\Http\Livewire\Client\UserProfile::class)->name('profile.bookings');
+    Route::get('/profile/schedule', \App\Http\Livewire\Client\Schedule::class)->name('profile.schedule');
     Route::get('/notifications', \App\Http\Livewire\Client\Notifications::class)->name('notifications');
     Route::get('/reviews/create/{booking}', \App\Http\Livewire\Client\ReviewCreate::class)->name('reviews.create');
 });
@@ -31,6 +32,7 @@ Route::middleware(['auth', 'role:owner'])->prefix('admin')->name('admin.')->grou
     Route::get('/trainers', \App\Http\Livewire\Admin\TrainersTable::class)->name('trainers');
     Route::get('/bookings', \App\Http\Livewire\Admin\BookingsTable::class)->name('bookings');
     Route::get('/reviews', \App\Http\Livewire\Admin\ReviewsModeration::class)->name('reviews');
+    Route::get('/schedule', \App\Http\Livewire\Admin\TrainerSchedule::class)->name('schedule');
     Route::get('/settings', \App\Http\Livewire\Admin\PlatformSettings::class)->name('settings');
     Route::get('/reports/bookings', \App\Http\Livewire\Admin\Reports\Bookings::class)->name('reports.bookings');
     Route::get('/reports/income', \App\Http\Livewire\Admin\Reports\Income::class)->name('reports.income');

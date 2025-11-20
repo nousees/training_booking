@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,7 +25,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $owner = User::create([
-            'name' => 'Владелец платформы',
+            'name' => 'Админ',
             'email' => 'owner@example.com',
             'password' => Hash::make('password'),
             'role' => 'owner',
@@ -41,6 +42,14 @@ class DatabaseSeeder extends Seeder
             'Иван Соколов',
         ];
         
+        $defaultImages = [
+            'https://images.pexels.com/photos/1552249/pexels-photo-1552249.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/7676402/pexels-photo-7676402.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/841130/pexels-photo-841130.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/6456307/pexels-photo-6456307.jpeg?auto=compress&cs=tinysrgb&w=600',
+            'https://images.pexels.com/photos/414029/pexels-photo-414029.jpeg?auto=compress&cs=tinysrgb&w=600',
+        ];
+
         for ($i = 1; $i <= 5; $i++) {
             $trainer = User::create([
                 'name' => $trainerNames[$i-1] ?? "Тренер {$i}",
@@ -58,7 +67,7 @@ class DatabaseSeeder extends Seeder
                 'experience_years' => rand(2, 15),
                 'price_per_hour' => rand(30, 100) + (rand(0, 99) / 100),
                 'rating' => round(rand(35, 50) / 10, 1),
-                'images' => [],
+                'images' => [$defaultImages[$i-1] ?? $defaultImages[0]],
             ]);
 
             $trainers[] = $trainer;
@@ -84,27 +93,42 @@ class DatabaseSeeder extends Seeder
         foreach ($trainers as $trainer) {
             for ($day = 0; $day < 7; $day++) {
                 $date = now()->addDays($day);
-                $sessionsPerDay = rand(2, 4);
-                
-                for ($s = 0; $s < $sessionsPerDay; $s++) {
-                    $startHour = rand(9, 18);
-                    $startMinute = rand(0, 1) * 30;
-                    $duration = rand(1, 2);
-                    
+
+                // Старт рабочего дня тренера и конец дня
+                $dayStart = $date->copy()->setTime(9, 0);
+                $dayEnd = $date->copy()->setTime(21, 0);
+
+                // Сколько тренировок в день (будут идти последовательно)
+                $sessionsPerDay = rand(3, 6);
+
+                $slotStart = $dayStart->copy();
+
+                for ($s = 0; $s < $sessionsPerDay && $slotStart < $dayEnd; $s++) {
+                    // Длительность 30 или 60 минут
+                    $durationMinutes = [30, 60][array_rand([0, 1])];
+
+                    /** @var Carbon $slotEnd */
+                    $slotEnd = $slotStart->copy()->addMinutes($durationMinutes);
+
+                    // Если слот выходит за конец дня — прекращаем цикл
+                    if ($slotEnd > $dayEnd) {
+                        break;
+                    }
+
                     $session = TrainingSession::create([
                         'trainer_id' => $trainer->id,
                         'date' => $date->format('Y-m-d'),
-                        'start_time' => sprintf('%02d:%02d:00', $startHour, $startMinute),
-                        'end_time' => sprintf('%02d:%02d:00', $startHour + $duration, $startMinute),
+                        'start_time' => $slotStart->format('H:i:s'),
+                        'end_time' => $slotEnd->format('H:i:s'),
                         'location' => rand(0, 1)
                             ? 'г. Москва, ул. Спортивная, д. ' . rand(1, 99)
                             : 'Ссылка на Zoom: ' . Str::random(10),
-                        'price' => $trainer->trainerProfile->price_per_hour * $duration,
+                        'price' => $trainer->trainerProfile->price_per_hour * ($durationMinutes / 60),
                         'status' => rand(0, 1) ? 'available' : 'booked',
                     ]);
-                    
+
                     $sessions[] = $session;
-                    
+
                     if ($session->status === 'booked' && !empty($clients)) {
                         $client = $clients[array_rand($clients)];
                         $booking = Booking::create([
@@ -125,6 +149,10 @@ class DatabaseSeeder extends Seeder
                             $trainer->trainerProfile->updateRating();
                         }
                     }
+
+                    // Небольшой перерыв между тренировками 0 или 30 минут
+                    $breakMinutes = rand(0, 1) ? 30 : 0;
+                    $slotStart = $slotEnd->copy()->addMinutes($breakMinutes);
                 }
             }
         }

@@ -22,6 +22,11 @@ class ScheduleManager extends Component
     public $freeStartOptions = [];
     public $freeEndOptions = [];
     public $timeStep = 30; // minutes: 30 or 60
+    public $showDetailsModal = false;
+    public $detailsSession = null;
+    public $expandedDates = [];
+
+    public $availableLocations = [];
 
     protected $rules = [
         'date' => 'required|date|after_or_equal:today',
@@ -35,10 +40,44 @@ class ScheduleManager extends Component
     public function mount()
     {
         $this->date = now()->format('Y-m-d');
+        $this->loadLocations();
+    }
+
+    protected function loadLocations(): void
+    {
+        $user = Auth::user();
+        $this->availableLocations = [];
+
+        if (!$user || !$user->trainerProfile) {
+            return;
+        }
+
+        $profile = $user->trainerProfile;
+        $locations = is_array($profile->locations) ? $profile->locations : [];
+
+        foreach ($locations as $loc) {
+            $loc = trim((string)$loc);
+            if ($loc !== '' && !in_array($loc, $this->availableLocations, true)) {
+                $this->availableLocations[] = $loc;
+            }
+        }
+
+        if ($profile->supports_online) {
+            $onlineLabel = 'Онлайн';
+            $onlineValue = $profile->online_link ?: 'Онлайн тренировка';
+            if ($profile->online_link) {
+                $onlineLabel = 'Онлайн (' . $profile->online_link . ')';
+            }
+            // Добавляем как отдельную строку со значением ссылки/описания
+            if (!in_array($onlineValue, $this->availableLocations, true)) {
+                $this->availableLocations[] = $onlineValue;
+            }
+        }
     }
 
     public function openForm($sessionId = null)
     {
+        $this->loadLocations();
         if ($sessionId) {
             $this->editingSession = TrainingSession::findOrFail($sessionId);
             $this->date = $this->editingSession->date->format('Y-m-d');
@@ -46,6 +85,11 @@ class ScheduleManager extends Component
             $this->endTime = $this->editingSession->end_time->format('H:i');
             $this->location = $this->editingSession->location;
             $this->price = $this->editingSession->price;
+
+            // если у слота локация отсутствует в текущих вариантах, добавим её, чтобы не потерять
+            if ($this->location && !in_array($this->location, $this->availableLocations, true)) {
+                $this->availableLocations[] = $this->location;
+            }
         } else {
             $this->resetForm();
         }
@@ -57,6 +101,27 @@ class ScheduleManager extends Component
     {
         $this->showForm = false;
         $this->resetForm();
+    }
+
+    public function showDetails($sessionId)
+    {
+        $this->detailsSession = TrainingSession::with(['booking.user'])->findOrFail($sessionId);
+        $this->showDetailsModal = true;
+    }
+
+    public function closeDetails()
+    {
+        $this->showDetailsModal = false;
+        $this->detailsSession = null;
+    }
+
+    public function toggleDateSection(string $date)
+    {
+        if (in_array($date, $this->expandedDates, true)) {
+            $this->expandedDates = array_values(array_diff($this->expandedDates, [$date]));
+        } else {
+            $this->expandedDates[] = $date;
+        }
     }
 
     public function resetForm()
@@ -249,13 +314,16 @@ class ScheduleManager extends Component
 
     public function render()
     {
-        $sessions = TrainingSession::where('trainer_id', Auth::id())
+        $today = now()->toDateString();
+        $until = now()->copy()->addDays(6)->toDateString();
+
+        $query = TrainingSession::where('trainer_id', Auth::id())
+            ->whereBetween('date', [$today, $until])
             ->orderBy('date')
-            ->orderBy('start_time')
-            ->paginate(20);
+            ->orderBy('start_time');
 
         return view('livewire.trainer.schedule-manager', [
-            'sessions' => $sessions,
+            'sessions' => $query->get(),
         ]);
     }
 }

@@ -32,6 +32,7 @@ class AppServiceProvider extends ServiceProvider
         Livewire::component('app.http.livewire.client.booking-form', \App\Http\Livewire\Client\BookingForm::class);
         Livewire::component('client.booking-form', \App\Http\Livewire\Client\BookingForm::class);
         Livewire::component('app.http.livewire.client.review-create', \App\Http\Livewire\Client\ReviewCreate::class);
+        Livewire::component('app.http.livewire.client.schedule', \App\Http\Livewire\Client\Schedule::class);
         Livewire::component('app.http.livewire.admin.users-table', \App\Http\Livewire\Admin\UsersTable::class);
         Livewire::component('app.http.livewire.admin.trainers-table', \App\Http\Livewire\Admin\TrainersTable::class);
         Livewire::component('app.http.livewire.admin.bookings-table', \App\Http\Livewire\Admin\BookingsTable::class);

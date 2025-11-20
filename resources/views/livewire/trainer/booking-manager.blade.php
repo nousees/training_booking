@@ -1,5 +1,6 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-6">Бронирования</h1>
+    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Бронирования</h1>
+    <p class="text-sm text-gray-500 mb-4">Управляйте запросами клиентов на тренировки</p>
 
     @if(session()->has('message'))
         <div class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
@@ -7,15 +8,47 @@
         </div>
     @endif
 
-    <div class="mb-4">
-        <select wire:model.live="statusFilter" 
-                class="rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
-            <option value="">Все статусы</option>
-            <option value="pending">Ожидает</option>
-            <option value="confirmed">Подтверждено</option>
-            <option value="canceled">Отменено</option>
-            <option value="completed">Завершено</option>
-        </select>
+    <div class="mb-4 bg-white rounded-lg shadow p-4 space-y-3">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Статус</label>
+                <select wire:model.live="statusFilter" 
+                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm">
+                    <option value="">Все статусы</option>
+                    <option value="pending">Ожидает</option>
+                    <option value="confirmed">Подтверждено</option>
+                    <option value="canceled">Отменено</option>
+                    <option value="completed">Завершено</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Клиент</label>
+                <input type="text" wire:model.live.debounce.300ms="search" 
+                       placeholder="Имя или email" 
+                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm"/>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Дата от</label>
+                <input type="date" wire:model.live="dateFrom" 
+                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm"/>
+            </div>
+
+            <div>
+                <label class="block text-xs font-medium text-gray-600 mb-1">Дата до</label>
+                <input type="date" wire:model.live="dateTo" 
+                       class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm"/>
+            </div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs text-gray-600">
+            <label class="inline-flex items-center gap-2">
+                <input type="checkbox" wire:model.live="futureOnly" 
+                       class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                <span>Показывать только будущие тренировки</span>
+            </label>
+        </div>
     </div>
 
     <div class="bg-white rounded-lg shadow-md overflow-hidden">

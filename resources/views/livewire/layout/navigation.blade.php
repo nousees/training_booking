@@ -24,8 +24,7 @@ new class extends Component
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ auth()->check() ? (auth()->user()->isOwner() ? route('admin.dashboard') : (auth()->user()->isTrainer() ? route('trainer-panel.dashboard') : route('trainers'))) : route('home') }}" wire:navigate class="flex items-center gap-2">
-                        <x-application-logo class="block h-9 w-auto fill-current text-green-600" />
-                        <span class="text-lg font-semibold text-gray-900">Солнечный <span class="text-green-600">Фитнес</span></span>
+                        <x-application-logo />
                     </a>
                 </div>
 

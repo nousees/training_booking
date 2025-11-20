@@ -19,6 +19,37 @@
                 @error('name') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
             </div>
 
+    @if($showPasswordModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Смена пароля</h3>
+                    <button type="button" wire:click="closePasswordModal" class="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Текущий пароль</label>
+                        <input type="password" wire:model="current_password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                        @error('current_password') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Новый пароль</label>
+                        <input type="password" wire:model="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                        @error('password') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Подтверждение</label>
+                        <input type="password" wire:model="password_confirmation" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" wire:click="closePasswordModal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Отмена</button>
+                    <button type="button" wire:click="changePassword" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500">Обновить пароль</button>
+                </div>
+            </div>
+        </div>
+    @endif
+
             <div class="mb-3">
                 <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <input type="email" value="{{ $email }}" disabled class="w-full rounded-md bg-gray-100 border-gray-200"/>
@@ -47,35 +78,18 @@
 
             <div class="flex items-center justify-between">
                 <button wire:click="saveProfile" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500">Сохранить</button>
-                <a href="{{ route('notifications') }}" class="text-sm text-green-700 hover:underline">Уведомления</a>
+                <div class="flex items-center gap-3">
+                    <button type="button" wire:click="openPasswordModal" class="text-sm text-gray-700 hover:underline">Поменять пароль</button>
+                    <a href="{{ route('notifications') }}" class="text-sm text-green-700 hover:underline">Уведомления</a>
+                </div>
             </div>
         </div>
 
         <div class="lg:col-span-2 space-y-6">
-            <div class="bg-white rounded-lg shadow p-6">
-                <div class="text-lg font-semibold mb-4">Смена пароля</div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Текущий пароль</label>
-                        <input type="password" wire:model="current_password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
-                        @error('current_password') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Новый пароль</label>
-                        <input type="password" wire:model="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
-                        @error('password') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Подтверждение</label>
-                        <input type="password" wire:model="password_confirmation" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <button wire:click="changePassword" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500">Обновить пароль</button>
-                </div>
-            </div>
             <div class="bg-white rounded-lg shadow overflow-hidden">
-                <div class="px-6 py-4 border-b bg-gray-50 font-semibold">Предстоящие тренировки</div>
+                <div class="px-6 py-4 border-b bg-gray-50 font-semibold">
+                    <span>Предстоящие тренировки</span>
+                </div>
                 <div class="divide-y">
                     @forelse($upcoming as $booking)
                         <div class="p-4 flex items-center justify-between">

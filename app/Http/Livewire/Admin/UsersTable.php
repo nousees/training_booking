@@ -2,7 +2,9 @@
 
 namespace App\Http\Livewire\Admin;
 
+use App\Models\Notification;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -25,7 +27,6 @@ class UsersTable extends Component
 
     public function updateRole($userId, $newRole)
     {
-
         if (!in_array($newRole, ['client', 'trainer'], true)) {
             session()->flash('error', 'Можно назначать только роли Клиент и Тренер.');
             return;
@@ -33,15 +34,49 @@ class UsersTable extends Component
 
         $user = User::findOrFail($userId);
 
-
         if ($user->role === 'owner' || auth()->id() === $user->id) {
             session()->flash('error', 'Этому пользователю нельзя изменить роль.');
             return;
         }
 
+        $oldRole = $user->role;
+        if ($oldRole === $newRole) {
+            session()->flash('message', 'Роль пользователя не изменилась.');
+            return;
+        }
+
         $user->update(['role' => $newRole]);
 
-        session()->flash('message', 'Роль пользователя обновлена');
+        // Текст для уведомления
+        $title = 'Роль в системе изменена';
+        if ($newRole === 'trainer') {
+            $title = 'Вам назначена роль тренера';
+        }
+
+        $message = "Ваша роль в системе была изменена с '{$oldRole}' на '{$newRole}'.";
+        if ($newRole === 'trainer') {
+            $message = 'Администратор назначил вам роль тренера. Теперь вам доступен кабинет тренера и управление расписанием.';
+        }
+
+        // Внутреннее уведомление в профиль
+        if ($user->notify_in_app ?? true) {
+            Notification::create([
+                'user_id' => $user->id,
+                'title' => $title,
+                'message' => $message,
+                'type' => 'role_changed',
+            ]);
+        }
+
+        // Email-уведомление
+        if (($user->notify_email ?? true) && $user->email) {
+            Mail::raw($message, function ($mail) use ($user, $title) {
+                $mail->to($user->email)
+                    ->subject($title);
+            });
+        }
+
+        session()->flash('message', 'Роль пользователя обновлена, уведомление отправлено.');
     }
 
     public function toggleBlock($userId)

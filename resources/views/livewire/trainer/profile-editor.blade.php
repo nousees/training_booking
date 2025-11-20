@@ -66,14 +66,69 @@
                     </div>
                 </div>
 
+                <div class="mt-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Локации (до 3 вариантов)</label>
+                    <div class="space-y-2">
+                        <input type="text" wire:model="locations.0" placeholder="Например: г. Москва, ул. Спортивная, д. 1" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                        <input type="text" wire:model="locations.1" placeholder="Дополнительная локация" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                        <input type="text" wire:model="locations.2" placeholder="Дополнительная локация" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                    </div>
+                    @error('locations.*') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+                </div>
+
+                <div class="mt-4 space-y-2">
+                    <label class="inline-flex items-center">
+                        <input type="checkbox" wire:model.live="supports_online" class="rounded border-gray-300 text-green-600 focus:ring-green-500">
+                        <span class="ml-2 text-sm text-gray-700">Провожу онлайн-тренировки</span>
+                    </label>
+                    @if($supports_online)
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Ссылка для онлайн-тренировок</label>
+                            <input type="text" wire:model="online_link" placeholder="Ссылка на Zoom или другую платформу" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                            @error('online_link') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+                        </div>
+                    @endif
+                </div>
                 
 
                 
             </div>
         </div>
 
-        <div class="flex justify-end">
+        <div class="flex items-center justify-between">
             <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500">Сохранить</button>
+            <button type="button" wire:click="openPasswordModal" class="text-sm text-gray-700 hover:underline">Поменять пароль</button>
         </div>
     </form>
+
+    @if($showPasswordModal)
+        <div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+            <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full mx-4 p-6">
+                <div class="flex items-start justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Смена пароля</h3>
+                    <button type="button" wire:click="closePasswordModal" class="text-gray-400 hover:text-gray-600 text-xl leading-none">×</button>
+                </div>
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Текущий пароль</label>
+                        <input type="password" wire:model="current_password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                        @error('current_password') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Новый пароль</label>
+                        <input type="password" wire:model="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                        @error('password') <div class="text-red-500 text-sm mt-1">{{ $message }}</div> @enderror
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Подтверждение</label>
+                        <input type="password" wire:model="password_confirmation" class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"/>
+                    </div>
+                </div>
+                <div class="mt-6 flex justify-end gap-3">
+                    <button type="button" wire:click="closePasswordModal" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300">Отмена</button>
+                    <button type="button" wire:click="changePassword" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:ring-2 focus:ring-green-500">Обновить пароль</button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

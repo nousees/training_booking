@@ -17,6 +17,7 @@ class TrainerProfile extends Model
         'price_per_hour',
         'rating',
         'images',
+        'locations',
         'supports_online',
         'online_link',
     ];
@@ -26,6 +27,7 @@ class TrainerProfile extends Model
         return [
             'specializations' => 'array',
             'images' => 'array',
+            'locations' => 'array',
             'price_per_hour' => 'decimal:2',
             'rating' => 'float',
             'supports_online' => 'boolean',
