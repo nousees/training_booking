@@ -116,7 +116,9 @@
                                         $cellSession = $slot['session'];
                                         $isBooked = $cellSession->status === 'booked';
 
-                                        $isPast = $slot['end']->lte(\Carbon\Carbon::now());
+                                        // Используем флаг is_past_slot, заранее вычисленный в компоненте
+                                        // с учётом таймзоны тренера, чтобы не зависеть от серверного now() в Blade.
+                                        $isPast = (bool)($cellSession->is_past_slot ?? false);
 
                                         if ($isPast) {
                                             $bg = 'bg-gray-400';
